@@ -177,21 +177,32 @@ export default function MiniDrawer() {
   const searchActions = useActions(SearchActions);
   const menuActions = useActions(MenuActions);
 
-  const iconsCreator  = (type:string,selected:boolean) => {
-    switch(type) {
-      case "ebook":   return (<BookIcon color={selected?"secondary":"action"}/>);
-      case "movie":   return (<MovieIcon color={selected?"secondary":"action"}/>);
-      case "software": return <DeveloperModeIcon color={selected?"secondary":"action"}/>;
-      case "podcast": return <CastConnectedIcon color={selected?"secondary":"action"}/>;
-      case "music":  return <MusicNoteIcon color={selected?"secondary":"action"}/>;
-      case "musicVideo":  return <MusicVideoIcon color={selected?"secondary":"action"}/>;
-      case "audiobook":  return <FeaturedPlayListIcon color={selected?"secondary":"action"} />;
-      case "shortFilm":  return <MovieFilterIcon color={selected?"secondary":"action"} />;
-      case "tvShow":  return <LiveTvIcon color={selected?"secondary":"action"}/>;
-      default:      return <h6>No match</h6>
+  const iconsCreator = (type: string, selected: boolean) => {
+    switch (type) {
+      case "ebook":
+        return <BookIcon color={selected ? "secondary" : "action"} />;
+      case "movie":
+        return <MovieIcon color={selected ? "secondary" : "action"} />;
+      case "software":
+        return <DeveloperModeIcon color={selected ? "secondary" : "action"} />;
+      case "podcast":
+        return <CastConnectedIcon color={selected ? "secondary" : "action"} />;
+      case "music":
+        return <MusicNoteIcon color={selected ? "secondary" : "action"} />;
+      case "musicVideo":
+        return <MusicVideoIcon color={selected ? "secondary" : "action"} />;
+      case "audiobook":
+        return (
+          <FeaturedPlayListIcon color={selected ? "secondary" : "action"} />
+        );
+      case "shortFilm":
+        return <MovieFilterIcon color={selected ? "secondary" : "action"} />;
+      case "tvShow":
+        return <LiveTvIcon color={selected ? "secondary" : "action"} />;
+      default:
+        return <h6>No match</h6>;
     }
-  }
-
+  };
 
   const isDarkTheme = useSelector(
     (state: RootState) => state.theme.isDarkTheme
@@ -214,6 +225,14 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
+  const handleSearchKeyPress = async (e:any) => {
+    if (e.key === "Enter") {
+      console.log("enter press here! ");
+      e.preventDefault();
+      console.log("searchInput", searchInput);
+      await searchActions.getSearch(searchInput);
+    }
+  };
 
   return (
     <>
@@ -248,17 +267,17 @@ export default function MiniDrawer() {
 
           <div className={classes.search}>
             <div className={classes.searchIcon}>
-            <IconButton
-              color="inherit"
-              aria-label="theme changer"
-              className={classes.themeChanger}
-              onClick={async () => {
-                console.log("searchInput",searchInput)
-                await searchActions.getSearch(searchInput);
-              }}
-            >
-              <SearchIcon color="primary"/>
-            </IconButton>
+              <IconButton
+                color="inherit"
+                aria-label="theme changer"
+                className={classes.themeChanger}
+                onClick={async () => {
+                  console.log("searchInput", searchInput);
+                  await searchActions.getSearch(searchInput);
+                }}
+              >
+                <SearchIcon color="primary" />
+              </IconButton>
             </div>
             <InputBase
               placeholder="Search…"
@@ -266,13 +285,13 @@ export default function MiniDrawer() {
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
-              onChange={(e) => setSearchInput((e.target as any).value)}
-              id="searchInput"
-              onClick={async (e) => {
-                e.preventDefault();
-                console.log("searchInput",searchInput)
-                await searchActions.getSearch(searchInput);
+              onChange={(e) => {
+                setSearchInput((e.target as any).value);
+                console.log("searchInput", searchInput);
               }}
+              type="input"
+              id="searchInput"
+              onKeyPress={handleSearchKeyPress}
               inputProps={{ "aria-label": "search" }}
             />
           </div>
@@ -330,7 +349,13 @@ export default function MiniDrawer() {
               key={text}
             >
               <ListItemIcon>
-                {index % 2 === 0 ? <SelectAllIcon color={menuType === "all"?"secondary":"action"}/> : <MailIcon />}
+                {index % 2 === 0 ? (
+                  <SelectAllIcon
+                    color={menuType === "all" ? "secondary" : "action"}
+                  />
+                ) : (
+                  <MailIcon />
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -339,19 +364,32 @@ export default function MiniDrawer() {
         <Divider />
         <List>
           {[
-            "ebook", "movie","software","podcast","music","musicVideo", "audiobook","shortFilm","tvShow"]
-            .map((text, index) => (
-              <ListItem
-                button selected={menuType !== undefined && text === menuType}
-                onClick={() => {
-                  handleCategoryClicked(text);
-                }}
-                key={text}>
-                <ListItemIcon color={"error"}>
-                  {( iconsCreator(text,menuType !== undefined && text === menuType) )}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
+            "ebook",
+            "movie",
+            "software",
+            "podcast",
+            "music",
+            "musicVideo",
+            "audiobook",
+            "shortFilm",
+            "tvShow",
+          ].map((text, index) => (
+            <ListItem
+              button
+              selected={menuType !== undefined && text === menuType}
+              onClick={() => {
+                handleCategoryClicked(text);
+              }}
+              key={text}
+            >
+              <ListItemIcon color={"error"}>
+                {iconsCreator(
+                  text,
+                  menuType !== undefined && text === menuType
+                )}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
           ))}
         </List>
       </Drawer>
