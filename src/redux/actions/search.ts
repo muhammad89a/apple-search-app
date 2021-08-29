@@ -18,7 +18,6 @@ export const getSearch =
     let dates:Date[] = getState().search.searchHistory.dates;
     let aMinBefore = new Date( Date.now() - 1000 * 60 )
     let newListHistory =  dates.filter((it)=> it > aMinBefore)
-    console.log("check")
 
     if(newListHistory.length>20){
       dispatch({
@@ -29,11 +28,10 @@ export const getSearch =
         });
       return
     }
-    console.log("push")
     newListHistory.push(new Date())
 
     let query = `?term= + ${input}`;
-    if (getState().type === "all") {
+    if (getState().menuReducer.menuType === "all") {
       query = `?term= + ${input}`;
     } else {
       query = "?term=" + input + "&media=" + getState().menuReducer.menuType;
